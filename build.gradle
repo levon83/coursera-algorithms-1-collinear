@@ -21,7 +21,7 @@ dependencies {
 
 version = '0.1.1'
 
-mainClassName = 'App'
+mainClassName = 'Point'
 
 jar {
     manifest {
@@ -37,6 +37,7 @@ jar {
 task zip(type: Zip) {
     archiveName 'collinear.zip'
     from 'src/main/java'
+    exclude 'LineSegment.java'
 }
 
 task submission {
