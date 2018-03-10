@@ -1,13 +1,11 @@
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
  * Brute force algorithm for finding all line segments containing 4 or more collinear points from a set.
  */
 public class BruteCollinearPoints {
-
-//    private final Point[] points;
 
     private LineSegment[] lineSegments;
 
@@ -20,8 +18,6 @@ public class BruteCollinearPoints {
         if (points == null) {
             throw new IllegalArgumentException("Points array is null.");
         }
-
-//        this.points = points;
 
         this.analise(points);
     }
@@ -50,7 +46,7 @@ public class BruteCollinearPoints {
      * @param points the points to analise
      */
     private void analise(Point[] points) {
-        List<LineSegment> tempSegments = new ArrayList<>();
+        List<LineSegment> tempSegments = new LinkedList<>();
         Point[] tempPoints = new Point[4];
 
         for (int i = 0; i < points.length - 3; i++) {
@@ -71,7 +67,7 @@ public class BruteCollinearPoints {
                     throw new IllegalArgumentException("Point is identical.");
                 }
 
-                Double slope1 = point0.slopeTo(point1);
+                double slope1 = point0.slopeTo(point1);
 
                 for (int k = j + 1; k < points.length - 1; k++) {
                     Point point2 = points[k];
@@ -83,14 +79,14 @@ public class BruteCollinearPoints {
                         throw new IllegalArgumentException("Point is identical.");
                     }
 
-                    Double slope2 = point0.slopeTo(point2);
+                    double slope2 = point0.slopeTo(point2);
 
-                    if (!slope1.equals(slope2)) {
+                    if (Double.compare(slope1, slope2) != 0) {
                         continue;
                     }
 
-                    for (int l = k + 1; l < points.length; l++) {
-                        Point point3 = points[l];
+                    for (int q = k + 1; q < points.length; q++) {
+                        Point point3 = points[q];
                         tempPoints[3] = point3;
 
                         if (point3 == null) {
@@ -99,9 +95,9 @@ public class BruteCollinearPoints {
                             throw new IllegalArgumentException("Point is identical.");
                         }
 
-                        Double slope3 = point0.slopeTo(point3);
+                        double slope3 = point0.slopeTo(point3);
 
-                        if (!slope1.equals(slope3)) {
+                        if (Double.compare(slope1, slope3) != 0) {
                             continue;
                         }
 

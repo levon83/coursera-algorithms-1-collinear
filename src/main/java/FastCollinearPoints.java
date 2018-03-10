@@ -8,8 +8,6 @@ import java.util.List;
  */
 public class FastCollinearPoints {
 
-//    private LineSegment[] lineSegments;
-
     private List<LineSegment> tempSegments = new LinkedList<>();
 
     /**
@@ -49,6 +47,8 @@ public class FastCollinearPoints {
      * @param points the points to analise
      */
     private void analise(Point[] points) {
+        StdRandom.shuffle(points);
+
         for (int i = 0; i < points.length; i++) {
             Point point = points[i];
 
@@ -56,12 +56,19 @@ public class FastCollinearPoints {
                 throw new IllegalArgumentException("Point is null.");
             }
 
-            StdRandom.shuffle(points);
-
             sort(point, points, i + 1, points.length - 1);
         }
     }
 
+    /**
+     * Modified implementation of QuickSort With Duplicates to also find line segments.
+     * Sorting is based on the slope to the provided point.
+     *
+     * @param point  the point to compare slopes to
+     * @param points the collection of all points
+     * @param lo     lowest index of subset
+     * @param hi     highest index of subset
+     */
     private void sort(Point point, Point[] points, int lo, int hi) {
         if (hi <= lo) {
             return;
@@ -71,7 +78,7 @@ public class FastCollinearPoints {
         int gt = hi;
         Point part = points[lo];
         int i = lo;
-
+        double slopePart = point.slopeTo(part);
         Point segmentFrom = point;
         Point segmentTo = point;
 
@@ -84,7 +91,8 @@ public class FastCollinearPoints {
                 throw new IllegalArgumentException("Point is identical.");
             }
 
-            int slopeCmp = Double.compare(point.slopeTo(next), point.slopeTo(part));
+            double slopeNext = point.slopeTo(next);
+            int slopeCmp = Double.compare(slopeNext, slopePart);
 
             if (slopeCmp < 0) {
                 exchange(points, lt++, i++);
@@ -101,7 +109,7 @@ public class FastCollinearPoints {
             }
         }
 
-        if (gt - lt + 1 >= 4) {
+        if (gt - lt + 1 >= 3) {
             this.tempSegments.add(new LineSegment(segmentFrom, segmentTo));
         }
 
@@ -109,6 +117,13 @@ public class FastCollinearPoints {
         sort(point, points, gt + 1, hi);
     }
 
+    /**
+     * Switch two elements in the array.
+     *
+     * @param a the array
+     * @param i first element
+     * @param j second element
+     */
     private void exchange(Comparable[] a, int i, int j) {
         Comparable swap = a[i];
         a[i] = a[j];
