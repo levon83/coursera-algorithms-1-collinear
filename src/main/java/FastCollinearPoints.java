@@ -1,6 +1,10 @@
+import edu.princeton.cs.algs4.In;
+import edu.princeton.cs.algs4.StdDraw;
+import edu.princeton.cs.algs4.StdOut;
 import edu.princeton.cs.algs4.StdRandom;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -8,7 +12,7 @@ import java.util.List;
  */
 public class FastCollinearPoints {
 
-    private List<LineSegment> tempSegments = new LinkedList<>();
+    private final List<LineSegment> tempSegments = new ArrayList<>();
 
     /**
      * Finds all line segments containing 4 points
@@ -20,7 +24,7 @@ public class FastCollinearPoints {
             throw new IllegalArgumentException("Points array is null.");
         }
 
-        this.analise(points);
+        this.analise(Arrays.copyOf(points, points.length));
     }
 
     /**
@@ -56,7 +60,7 @@ public class FastCollinearPoints {
                 throw new IllegalArgumentException("Point is null.");
             }
 
-            sort(point, points, i + 1, points.length - 1);
+            sort(point, points, i, points.length - 1);
         }
     }
 
@@ -87,7 +91,7 @@ public class FastCollinearPoints {
 
             if (next == null) {
                 throw new IllegalArgumentException("Point is null.");
-            } else if (point.compareTo(next) == 0) {
+            } else if (point != next && point.compareTo(next) == 0) {
                 throw new IllegalArgumentException("Point is identical.");
             }
 
@@ -120,14 +124,46 @@ public class FastCollinearPoints {
     /**
      * Switch two elements in the array.
      *
-     * @param a the array
-     * @param i first element
-     * @param j second element
+     * @param points the array
+     * @param i      first element
+     * @param j      second element
      */
-    private void exchange(Comparable[] a, int i, int j) {
-        Comparable swap = a[i];
-        a[i] = a[j];
-        a[j] = swap;
+    private void exchange(Point[] points, int i, int j) {
+        Point swap = points[i];
+        points[i] = points[j];
+        points[j] = swap;
+    }
+
+    /**
+     * Unit tests the Point data type.
+     */
+    public static void main(String[] args) {
+        // read the n points from a file
+        In in = new In(args[0]);
+        int n = in.readInt();
+        Point[] points = new Point[n];
+        for (int i = 0; i < n; i++) {
+            int x = in.readInt();
+            int y = in.readInt();
+            points[i] = new Point(x, y);
+        }
+
+        // draw the points
+        StdDraw.enableDoubleBuffering();
+        StdDraw.setXscale(0, 32768);
+        StdDraw.setYscale(0, 32768);
+        for (Point p : points) {
+            p.draw();
+        }
+        StdDraw.show();
+
+        // print and draw the line segments
+        FastCollinearPoints collinear = new FastCollinearPoints(points);
+        for (LineSegment segment : collinear.segments()) {
+            StdOut.println(segment);
+            segment.draw();
+        }
+        StdDraw.show();
     }
 
 }

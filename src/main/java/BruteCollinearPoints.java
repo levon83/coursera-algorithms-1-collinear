@@ -19,7 +19,7 @@ public class BruteCollinearPoints {
             throw new IllegalArgumentException("Points array is null.");
         }
 
-        this.analise(points);
+        this.analise(Arrays.copyOf(points, points.length));
     }
 
     /**
@@ -37,7 +37,7 @@ public class BruteCollinearPoints {
      * @return the line segments
      */
     public LineSegment[] segments() {
-        return this.lineSegments;
+        return Arrays.copyOf(this.lineSegments, this.lineSegments.length);
     }
 
     /**
@@ -49,7 +49,7 @@ public class BruteCollinearPoints {
         List<LineSegment> tempSegments = new LinkedList<>();
         Point[] tempPoints = new Point[4];
 
-        for (int i = 0; i < points.length - 3; i++) {
+        for (int i = 0; i < points.length; i++) {
             Point point0 = points[i];
             tempPoints[0] = point0;
 
@@ -57,7 +57,7 @@ public class BruteCollinearPoints {
                 throw new IllegalArgumentException("Point is null.");
             }
 
-            for (int j = i + 1; j < points.length - 2; j++) {
+            for (int j = i + 1; j < points.length; j++) {
                 Point point1 = points[j];
                 tempPoints[1] = point1;
 
@@ -69,21 +69,17 @@ public class BruteCollinearPoints {
 
                 double slope1 = point0.slopeTo(point1);
 
-                for (int k = j + 1; k < points.length - 1; k++) {
+                for (int k = j + 1; k < points.length; k++) {
                     Point point2 = points[k];
                     tempPoints[2] = point2;
 
                     if (point2 == null) {
                         throw new IllegalArgumentException("Point is null.");
-                    } else if (point2.compareTo(point0) == 0) {
+                    } else if (point2.compareTo(point0) == 0 || point2.compareTo(point1) == 0) {
                         throw new IllegalArgumentException("Point is identical.");
                     }
 
                     double slope2 = point0.slopeTo(point2);
-
-                    if (Double.compare(slope1, slope2) != 0) {
-                        continue;
-                    }
 
                     for (int q = k + 1; q < points.length; q++) {
                         Point point3 = points[q];
@@ -91,13 +87,13 @@ public class BruteCollinearPoints {
 
                         if (point3 == null) {
                             throw new IllegalArgumentException("Point is null.");
-                        } else if (point3.compareTo(point0) == 0) {
+                        } else if (point3.compareTo(point0) == 0 || point3.compareTo(point1) == 0 || point3.compareTo(point2) == 0) {
                             throw new IllegalArgumentException("Point is identical.");
                         }
 
                         double slope3 = point0.slopeTo(point3);
 
-                        if (Double.compare(slope1, slope3) != 0) {
+                        if (Double.compare(slope1, slope2) != 0 || Double.compare(slope1, slope3) != 0) {
                             continue;
                         }
 
